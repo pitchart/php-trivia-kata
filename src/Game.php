@@ -8,31 +8,20 @@ function echoln($string) {
 }
 
 class Game {
-    var $players;
-    var $places;
-    var $purses ;
-    var $inPenaltyBox ;
+    var $players = array();
+    var $places = array(0);
+    var $purses = array(0);
+    var $inPenaltyBox = array(0);
 
-    var $popQuestions;
-    var $scienceQuestions;
-    var $sportsQuestions;
-    var $rockQuestions;
+    var $popQuestions = [];
+    var $scienceQuestions = [];
+    var $sportsQuestions = [];
+    var $rockQuestions = [];
 
     var $currentPlayer = 0;
     var $isGettingOutOfPenaltyBox;
 
     function  __construct(){
-
-        $this->players = array();
-        $this->places = array(0);
-        $this->purses  = array(0);
-        $this->inPenaltyBox  = array(0);
-
-        $this->popQuestions = array();
-        $this->scienceQuestions = array();
-        $this->sportsQuestions = array();
-        $this->rockQuestions = array();
-
         for ($i = 0; $i < 50; $i++) {
             array_push($this->popQuestions, "Pop Question " . $i);
             array_push($this->scienceQuestions, ("Science Question " . $i));
