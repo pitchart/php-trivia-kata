@@ -8,31 +8,20 @@ function echoln($string) {
 }
 
 class Game {
-    var $players;
-    var $places;
-    var $purses ;
-    var $inPenaltyBox ;
+    var $players = array();
+    var $places = array(0);
+    var $purses = array(0);
+    var $inPenaltyBox = array(0);
 
-    var $popQuestions;
-    var $scienceQuestions;
-    var $sportsQuestions;
-    var $rockQuestions;
+    var $popQuestions = [];
+    var $scienceQuestions = [];
+    var $sportsQuestions = [];
+    var $rockQuestions = [];
 
     var $currentPlayer = 0;
     var $isGettingOutOfPenaltyBox;
 
     function  __construct(){
-
-        $this->players = array();
-        $this->places = array(0);
-        $this->purses  = array(0);
-        $this->inPenaltyBox  = array(0);
-
-        $this->popQuestions = array();
-        $this->scienceQuestions = array();
-        $this->sportsQuestions = array();
-        $this->rockQuestions = array();
-
         for ($i = 0; $i < 50; $i++) {
             array_push($this->popQuestions, "Pop Question " . $i);
             array_push($this->scienceQuestions, ("Science Question " . $i));
@@ -101,28 +90,34 @@ class Game {
     }
 
     function  askQuestion() {
-        if ($this->currentCategory() == "Pop")
+        if ($this->currentCategory() == Category::POP)
             echoln(array_shift($this->popQuestions));
-        if ($this->currentCategory() == "Science")
+        if ($this->currentCategory() == Category::SCIENCE)
             echoln(array_shift($this->scienceQuestions));
-        if ($this->currentCategory() == "Sports")
+        if ($this->currentCategory() == Category::SPORTS)
             echoln(array_shift($this->sportsQuestions));
-        if ($this->currentCategory() == "Rock")
+        if ($this->currentCategory() == Category::ROCK)
             echoln(array_shift($this->rockQuestions));
     }
 
 
     function currentCategory() {
-        if ($this->places[$this->currentPlayer] == 0) return "Pop";
-        if ($this->places[$this->currentPlayer] == 4) return "Pop";
-        if ($this->places[$this->currentPlayer] == 8) return "Pop";
-        if ($this->places[$this->currentPlayer] == 1) return "Science";
-        if ($this->places[$this->currentPlayer] == 5) return "Science";
-        if ($this->places[$this->currentPlayer] == 9) return "Science";
-        if ($this->places[$this->currentPlayer] == 2) return "Sports";
-        if ($this->places[$this->currentPlayer] == 6) return "Sports";
-        if ($this->places[$this->currentPlayer] == 10) return "Sports";
-        return "Rock";
+        switch ($this->places[$this->currentPlayer]) {
+            case 0:
+            case 4:
+            case 8:
+                return Category::POP;
+            case 1:
+            case 5:
+            case 9:
+                return Category::SCIENCE;
+            case 2:
+            case 6:
+            case 10:
+                return Category::SPORTS;
+            default:
+                return Category::ROCK;
+        }
     }
 
     function wasCorrectlyAnswered() {
