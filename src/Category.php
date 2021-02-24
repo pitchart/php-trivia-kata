@@ -13,4 +13,9 @@ class Category
     const SPORTS = "Sports";
 
     const ROCK = "Rock";
+
+    public static function all()
+    {
+        return [Category::POP, Category::ROCK, Category::SCIENCE, Category::SPORTS];
+    }
 }

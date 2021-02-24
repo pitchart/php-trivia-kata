@@ -12,13 +12,25 @@ class Game {
      * @var array | Player[]
      */
     private $players = array();
-    var $places = array(0);
+
     var $purses = array(0);
     var $inPenaltyBox = array(0);
 
+    /**
+     * @var array | Question[]
+     */
     var $popQuestions = [];
+    /**
+     * @var array | Question[]
+     */
     var $scienceQuestions = [];
+    /**
+     * @var array | Question[]
+     */
     var $sportsQuestions = [];
+    /**
+     * @var array | Question[]
+     */
     var $rockQuestions = [];
 
     var $currentPlayer = 0;
@@ -28,15 +40,36 @@ class Game {
 
     public function  __construct(){
         for ($i = 0; $i < 50; $i++) {
-            array_push($this->popQuestions, "Pop Question " . $i);
-            array_push($this->scienceQuestions, ("Science Question " . $i));
-            array_push($this->sportsQuestions, ("Sports Question " . $i));
-            array_push($this->rockQuestions, $this->createRockQuestion($i));
+            array_push($this->popQuestions, $this->createQuestion(Category::POP, $i));
+            array_push($this->scienceQuestions, $this->createQuestion(Category::SCIENCE, $i));
+            array_push($this->sportsQuestions, $this->createQuestion(Category::SPORTS, $i));
+            array_push($this->rockQuestions, $this->createQuestion(Category::ROCK, $i));
         }
     }
 
-    private function createRockQuestion($index){
-        return "Rock Question " . $index;
+    private function createQuestion(string $category, int $index): Question
+    {
+        $questionLabel = $this->createLabel($category);
+        return new Question($questionLabel. " ".$index);
+    }
+
+    private function createLabel(string $category)
+    {
+        switch ($category) {
+            case Category::SPORTS:
+                return "Sports Question";
+            case Category::ROCK:
+                return "Rock Question";
+            case Category::SCIENCE:
+                return "Science Question";
+            case Category::POP:
+                return "Pop Question";
+        }
+        throw new \InvalidArgumentException(sprintf(
+            '$category must be in [%s], %s given',
+            implode(', ', Category::all()),
+            $category
+        ));
     }
 
     /**
