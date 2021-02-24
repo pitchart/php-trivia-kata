@@ -27,7 +27,7 @@ class GameTest extends TestCase
 
     public function test_can_add_player()
     {
-        $this->game->addPlayer(new Player('toto'));
+        $this->game->addPlayer('toto');
 
         $this->assertSame(1, $this->game->howManyPlayers());
     }
