@@ -44,11 +44,11 @@ class Game {
      */
     public function getQuestion($roll): void
     {
-        $this->places[$this->currentPlayer] = ($this->places[$this->currentPlayer] + $roll) % $this->maxPlaces;
+        $this->players[$this->currentPlayer]->changePlace($roll, $this->maxPlaces);
 
         echoln($this->players[$this->currentPlayer]
             . "'s new location is "
-            . $this->places[$this->currentPlayer]);
+            . $this->getCurrentPlayerPlace());
         echoln("The category is " . $this->currentCategory());
         $this->askQuestion();
     }
@@ -58,8 +58,7 @@ class Game {
     }
 
     public function addPlayer($playerName) {
-        array_push($this->players, $playerName);
-        $this->places[$this->howManyPlayers()] = 0;
+        array_push($this->players, new Player($playerName));
         $this->purses[$this->howManyPlayers()] = 0;
         $this->inPenaltyBox[$this->howManyPlayers()] = false;
 
@@ -88,7 +87,6 @@ class Game {
             }
 
         } else {
-
             $this->getQuestion($roll);
         }
 
@@ -96,18 +94,18 @@ class Game {
 
     private function  askQuestion() {
         if ($this->currentCategory() == Category::POP)
-            echoln(array_shift($this->popQuestions));
+            echoln(array_shift($this->popQuestions)->getLabel());
         if ($this->currentCategory() == Category::SCIENCE)
-            echoln(array_shift($this->scienceQuestions));
+            echoln(array_shift($this->scienceQuestions)->getLabel());
         if ($this->currentCategory() == Category::SPORTS)
-            echoln(array_shift($this->sportsQuestions));
+            echoln(array_shift($this->sportsQuestions)->getLabel());
         if ($this->currentCategory() == Category::ROCK)
-            echoln(array_shift($this->rockQuestions));
+            echoln(array_shift($this->rockQuestions)->getLabel());
     }
 
 
     private function currentCategory() {
-        switch ($this->places[$this->currentPlayer] % 4) {
+        switch ($this->getCurrentPlayerPlace() % 4) {
             case 0:
                 return Category::POP;
             case 1:
@@ -139,11 +137,7 @@ class Game {
                 if ($this->currentPlayer == count($this->players)) $this->currentPlayer = 0;
                 return true;
             }
-
-
-
         } else {
-
             echoln("Answer was corrent!!!!");
             $this->purses[$this->currentPlayer]++;
             echoln($this->players[$this->currentPlayer]
@@ -176,6 +170,17 @@ class Game {
 
     public function isEnded(): bool
     {
-        return in_array(6, $this->purses);
+        foreach ($this->purses as $purse) {
+            if ($purse >= 6) {
+                return true;
+            }
+        }
+        return false;
     }
+
+    private function getCurrentPlayerPlace(): int
+    {
+        return $this->players[$this->currentPlayer]->getPlace();
+    }
+
 }
