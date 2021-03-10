@@ -14,7 +14,7 @@ class PlayerTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->player = new Player('Toto', 1);
+        $this->player = new Player('Toto');
     }
 
     public function test_has_a_name()
@@ -37,14 +37,26 @@ class PlayerTest extends TestCase
         $this->assertEquals(0, $this->player->getPurse());
     }
 
-    public function test_changes_place_without_riching_max_value()
+    public function test_changes_place_without_reaching_max_value()
     {
+        $this->player->changePlace(2, 5);
 
+        $this->assertEquals(2, $this->player->getPlace());
     }
 
-    public function test_changes_place_riching_max_value()
+    public function test_changes_place_reaching_max_value()
     {
+        $this->player->changePlace(6, 4);
 
+        $this->assertEquals(2, $this->player->getPlace());
+    }
+
+    public function test_reaching_max_place_on_many_rolls_leads_to_initial_place()
+    {
+        $this->player->changePlace(2, 6);
+        $this->player->changePlace(4, 6);
+
+        $this->assertEquals(0, $this->player->getPlace());
     }
 
 }
