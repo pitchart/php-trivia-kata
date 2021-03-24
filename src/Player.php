@@ -61,9 +61,15 @@ class Player
         return $this->inPenaltyBox;
     }
 
-    public function changePlace(int $roll, int $maxPlaces)
+    /**
+     * Places the player on his new position
+     *
+     * @param int $roll
+     * @param int $maxPlaces
+     */
+    public function changePlace(int $roll, int $numberOfPlaces)
     {
-        $this->place = ($this->place + $roll) % $maxPlaces;
+        $this->place = ($this->place + $roll) % $numberOfPlaces;
     }
 
 }
