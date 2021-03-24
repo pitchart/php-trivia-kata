@@ -18,7 +18,7 @@ do {
     if (rand(0,9) == 7) {
         $aGame->wrongAnswer();
     } else {
-        $aGame->wasCorrectlyAnswered();
+        $aGame->correctAnswer();
     }
 
 
