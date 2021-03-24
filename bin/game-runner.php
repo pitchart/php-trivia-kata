@@ -3,12 +3,13 @@
 require_once __DIR__.'/../vendor/autoload.php';
 
 use Trivia\Game;
+use Trivia\Player;
 
 $aGame = new Game();
 
-$aGame->addPlayer("Chet");
-$aGame->addPlayer("Pat");
-$aGame->addPlayer("Sue");
+$aGame->addPlayer(new Player("Chet"));
+$aGame->addPlayer(new Player("Pat"));
+$aGame->addPlayer(new Player("Sue"));
 
 
 do {

@@ -59,4 +59,23 @@ class PlayerTest extends TestCase
         $this->assertEquals(0, $this->player->getPlace());
     }
 
+    public function test_increment_purse()
+    {
+        $this->player->incrementPurse();
+        $this->assertEquals(1, $this->player->getPurse());
+    }
+
+    public function test_enters_penalty_box()
+    {
+        $this->player->enterPenaltyBox();
+        $this->assertTrue($this->player->isInPenaltyBox());
+    }
+
+    public function test_leaves_penalty_box()
+    {
+        $this->player->enterPenaltyBox();
+        $this->player->leavePenaltyBox();
+        $this->assertFalse($this->player->isInPenaltyBox());
+    }
+
 }
