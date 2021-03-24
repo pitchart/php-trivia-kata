@@ -50,7 +50,7 @@ class Game {
     private function createQuestion(string $category, int $index): Question
     {
         $questionLabel = $this->createLabel($category);
-        return new Question($questionLabel. " ".$index);
+        return new Question($questionLabel. " ".$index, $category);
     }
 
     private function createLabel(string $category)

@@ -57,6 +57,14 @@ class GameTest extends TestCase
         $this->assertFalse($this->game->isEnded());
     }
 
+    public function test_initializes_with_questions()
+    {
+        $this->assertCount(50, $this->game->popQuestions);
+        $this->assertCount(50, $this->game->sportsQuestions);
+        $this->assertCount(50, $this->game->scienceQuestions);
+        $this->assertCount(50, $this->game->rockQuestions);
+    }
+
 
 
 }
