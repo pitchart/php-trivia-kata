@@ -4,6 +4,7 @@ namespace Tests;
 
 use Generator;
 use PHPUnit\Framework\TestCase;
+use Tests\Fixtures\ArrayOutput;
 use Trivia\Game;
 use Trivia\Player;
 
@@ -13,6 +14,11 @@ class GameTest extends TestCase
      * @var Game
      */
     private $game;
+
+    /**
+     * @var ArrayOutput
+     */
+    private $arrayOutput;
 
     /**
      * @return Generator
@@ -27,14 +33,8 @@ class GameTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->game = new Game();
-        ob_start();
-    }
-
-    protected function tearDown(): void
-    {
-        $output = ob_get_contents();
-        ob_end_clean();
+        $this->arrayOutput = new ArrayOutput();
+        $this->game = new Game($this->arrayOutput);
     }
 
     public function test_can_add_player()

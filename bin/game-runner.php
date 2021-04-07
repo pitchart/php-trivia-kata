@@ -4,8 +4,9 @@ require_once __DIR__.'/../vendor/autoload.php';
 
 use Trivia\Game;
 use Trivia\Player;
+use Trivia\ConsoleOutput;
 
-$aGame = new Game();
+$aGame = new Game(new ConsoleOutput());
 
 $aGame->addPlayer(new Player("Chet"));
 $aGame->addPlayer(new Player("Pat"));

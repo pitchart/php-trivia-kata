@@ -3,10 +3,6 @@
 
 namespace Trivia;
 
-function echoln($string) {
-    echo $string."\n";
-}
-
 class Game {
     /**
      * @var array | Player[]
@@ -35,7 +31,21 @@ class Game {
 
     private $maxPlaces = 12;
 
-    public function  __construct(){
+    /**
+     * @var OutputInterface
+     */
+    private $output;
+
+    /**
+     * Game constructor.
+     *
+     * @param OutputInterface $output
+     */
+    public function  __construct(
+        OutputInterface $output
+    ){
+        $this->output = $output;
+
         for ($i = 0; $i < 50; $i++) {
             array_push($this->popQuestions, $this->createQuestion(Category::POP, $i));
             array_push($this->scienceQuestions, $this->createQuestion(Category::SCIENCE, $i));
@@ -76,10 +86,10 @@ class Game {
     {
         $this->players[$this->currentPlayer]->changePlace($roll, $this->maxPlaces);
 
-        echoln($this->players[$this->currentPlayer]
+        $this->output->write($this->players[$this->currentPlayer]
             . "'s new location is "
             . $this->getCurrentPlayerPlace());
-        echoln("The category is " . $this->currentCategory());
+        $this->output->write("The category is " . $this->currentCategory());
         $this->askQuestion();
     }
 
@@ -94,8 +104,8 @@ class Game {
     public function addPlayer(Player $player) {
         array_push($this->players, $player);
 
-        echoln($player . " was added");
-        echoln("They are player number " . count($this->players));
+        $this->output->write($player . " was added");
+        $this->output->write("They are player number " . count($this->players));
         return true;
     }
 
@@ -104,17 +114,17 @@ class Game {
     }
 
     public function  roll($roll) {
-        echoln($this->players[$this->currentPlayer] . " is the current player");
-        echoln("They have rolled a " . $roll);
+        $this->output->write($this->players[$this->currentPlayer] . " is the current player");
+        $this->output->write("They have rolled a " . $roll);
 
         if ($this->players[$this->currentPlayer]->isInPenaltyBox()) {
             if ($roll % 2 != 0) {
                 $this->isGettingOutOfPenaltyBox = true;
-                echoln($this->players[$this->currentPlayer] . " is getting out of the penalty box");
+                $this->output->write($this->players[$this->currentPlayer] . " is getting out of the penalty box");
 
                 $this->getQuestion($roll);
             } else {
-                echoln($this->players[$this->currentPlayer] . " is not getting out of the penalty box");
+                $this->output->write($this->players[$this->currentPlayer] . " is not getting out of the penalty box");
                 $this->isGettingOutOfPenaltyBox = false;
             }
 
@@ -126,13 +136,13 @@ class Game {
 
     private function  askQuestion() {
         if ($this->currentCategory() == Category::POP)
-            echoln(array_shift($this->popQuestions)->getLabel());
+            $this->output->write(array_shift($this->popQuestions)->getLabel());
         if ($this->currentCategory() == Category::SCIENCE)
-            echoln(array_shift($this->scienceQuestions)->getLabel());
+            $this->output->write(array_shift($this->scienceQuestions)->getLabel());
         if ($this->currentCategory() == Category::SPORTS)
-            echoln(array_shift($this->sportsQuestions)->getLabel());
+            $this->output->write(array_shift($this->sportsQuestions)->getLabel());
         if ($this->currentCategory() == Category::ROCK)
-            echoln(array_shift($this->rockQuestions)->getLabel());
+            $this->output->write(array_shift($this->rockQuestions)->getLabel());
     }
 
 
@@ -153,9 +163,9 @@ class Game {
         if (!$this->players[$this->currentPlayer]->isInPenaltyBox()
             || $this->isGettingOutOfPenaltyBox
         ) {
-            echoln("Answer was correct!!!!");
+            $this->output->write("Answer was correct!!!!");
             $this->players[$this->currentPlayer]->incrementPurse();
-            echoln($this->players[$this->currentPlayer]
+            $this->output->write($this->players[$this->currentPlayer]
                 . " now has "
                 .$this->players[$this->currentPlayer]->getPurse()
                 . " Gold Coins.");
@@ -164,8 +174,8 @@ class Game {
     }
 
     public function wrongAnswer(){
-        echoln("Question was incorrectly answered");
-        echoln($this->players[$this->currentPlayer] . " was sent to the penalty box");
+        $this->output->write("Question was incorrectly answered");
+        $this->output->write($this->players[$this->currentPlayer] . " was sent to the penalty box");
         $this->players[$this->currentPlayer]->enterPenaltyBox();
 
         $this->nextPlayer();
