@@ -37,14 +37,22 @@ class Game {
     private $output;
 
     /**
+     * @var DiceInterface
+     */
+    private $dice;
+
+    /**
      * Game constructor.
      *
      * @param OutputInterface $output
      */
     public function  __construct(
-        OutputInterface $output
+        OutputInterface $output,
+        ?DiceInterface $dice = null
     ){
         $this->output = $output;
+        if (null == $dice) $dice = new Dice(6);
+        $this->dice = $dice;
 
         for ($i = 0; $i < 50; $i++) {
             array_push($this->popQuestions, $this->createQuestion(Category::POP, $i));
@@ -114,6 +122,10 @@ class Game {
     }
 
     public function  roll($roll) {
+        if (!$this->isPlayable()){
+            throw new \LogicException("Need at least 2 players");
+        }
+
         $this->output->write($this->players[$this->currentPlayer] . " is the current player");
         $this->output->write("They have rolled a " . $roll);
 

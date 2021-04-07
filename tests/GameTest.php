@@ -78,6 +78,18 @@ class GameTest extends TestCase
         $this->assertCount(50, $this->game->rockQuestions);
     }
 
+    public function test_cannot_roll_when_there_is_no_players()
+    {
+        $this->expectException(\LogicException::class);
+        $this->game->roll(6);
+    }
 
+    public function test_cannot_roll_when_there_only_one_player()
+    {
+        $this->expectException(\LogicException::class);
+
+        $this->game->addPlayer(new Player('bob'));
+        $this->game->roll(6);
+    }
 
 }
