@@ -2,6 +2,7 @@
 
 namespace Tests;
 
+use Generator;
 use PHPUnit\Framework\TestCase;
 use Trivia\Game;
 use Trivia\Player;
@@ -12,6 +13,17 @@ class GameTest extends TestCase
      * @var Game
      */
     private $game;
+
+    /**
+     * @return Generator
+     */
+    public function pointsProvider()
+    {
+        yield from [
+            'a_player_scores_6' => [6],
+            'a_player_scores_more_than_6' => ['$points' => 9]
+        ];
+    }
 
     protected function setUp(): void
     {
@@ -27,21 +39,22 @@ class GameTest extends TestCase
 
     public function test_can_add_player()
     {
-        $this->game->addPlayer('toto');
+        $this->game->addPlayer(new Player('toto'));
 
         $this->assertSame(1, $this->game->howManyPlayers());
     }
 
-    public function test_game_is_ended_when_a_player_scores_6()
+    /**
+     * @param int $points
+     * @dataProvider pointsProvider
+     */
+    public function test_game_is_ended($points)
     {
-        $this->game->purses[3] = 6;
+        $playerMock = $this->getMockBuilder(Player::class)
+            ->disableOriginalConstructor()->onlyMethods(['getPurse'])->getMock();
+        $playerMock->expects($this->once())->method('getPurse')->willReturn($points);
 
-        $this->assertTrue($this->game->isEnded());
-    }
-
-    public function test_game_is_ended_when_a_player_scores_more_than_6()
-    {
-        $this->game->purses[3] = 9;
+        $this->game->addPlayer($playerMock);
 
         $this->assertTrue($this->game->isEnded());
     }

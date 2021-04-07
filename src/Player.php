@@ -62,6 +62,25 @@ class Player
     }
 
     /**
+     * @return bool
+     */
+    public function enterPenaltyBox(): self
+    {
+        $this->inPenaltyBox = true;
+        return $this;
+    }
+
+    /**
+     * @return bool
+     * @todo Does the player leave the penalty box?
+     */
+    public function leavePenaltyBox(): self
+    {
+        $this->inPenaltyBox = false;
+        return $this;
+    }
+
+    /**
      * Places the player on his new position
      *
      * @param int $roll
@@ -72,4 +91,11 @@ class Player
         $this->place = ($this->place + $roll) % $numberOfPlaces;
     }
 
+    /**
+     *
+     */
+    public function incrementPurse()
+    {
+        $this->purse++;
+    }
 }
