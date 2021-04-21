@@ -15,7 +15,7 @@ $aGame->addPlayer(new Player("Sue"));
 
 do {
 
-    $aGame->roll(rand(0,5) + 1);
+    $aGame->roll();
 
     if (rand(0,9) == 7) {
         $aGame->wrongAnswer();

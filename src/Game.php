@@ -10,21 +10,21 @@ class Game {
     private $players = array();
 
     /**
-     * @var array | Question[]
+     * @var Category
      */
-    var $popQuestions = [];
+    var $popQuestions;
     /**
-     * @var array | Question[]
+     * @var Category
      */
-    var $scienceQuestions = [];
+    var $scienceQuestions;
     /**
-     * @var array | Question[]
+     * @var Category
      */
-    var $sportsQuestions = [];
+    var $sportsQuestions;
     /**
-     * @var array | Question[]
+     * @var Category
      */
-    var $rockQuestions = [];
+    var $rockQuestions;
 
     var $currentPlayer = 0;
     var $isGettingOutOfPenaltyBox;
@@ -54,11 +54,16 @@ class Game {
         if (null == $dice) $dice = new Dice(6);
         $this->dice = $dice;
 
+        $this->popQuestions = new Category(Categories::POP);
+        $this->scienceQuestions = new Category(Categories::SCIENCE);
+        $this->rockQuestions = new Category(Categories::ROCK);
+        $this->sportsQuestions = new Category(Categories::SPORTS);
+
         for ($i = 0; $i < 50; $i++) {
-            array_push($this->popQuestions, $this->createQuestion(Category::POP, $i));
-            array_push($this->scienceQuestions, $this->createQuestion(Category::SCIENCE, $i));
-            array_push($this->sportsQuestions, $this->createQuestion(Category::SPORTS, $i));
-            array_push($this->rockQuestions, $this->createQuestion(Category::ROCK, $i));
+            $this->popQuestions->addQuestion($this->createQuestion(Categories::POP, $i));
+            $this->scienceQuestions->addQuestion($this->createQuestion(Categories::SCIENCE, $i));
+            $this->sportsQuestions->addQuestion($this->createQuestion(Categories::SPORTS, $i));
+            $this->rockQuestions->addQuestion($this->createQuestion(Categories::ROCK, $i));
         }
     }
 
@@ -71,18 +76,18 @@ class Game {
     private function createLabel(string $category)
     {
         switch ($category) {
-            case Category::SPORTS:
+            case Categories::SPORTS:
                 return "Sports Question";
-            case Category::ROCK:
+            case Categories::ROCK:
                 return "Rock Question";
-            case Category::SCIENCE:
+            case Categories::SCIENCE:
                 return "Science Question";
-            case Category::POP:
+            case Categories::POP:
                 return "Pop Question";
         }
         throw new \InvalidArgumentException(sprintf(
             '$category must be in [%s], %s given',
-            implode(', ', Category::all()),
+            implode(', ', Categories::all()),
             $category
         ));
     }
@@ -121,7 +126,9 @@ class Game {
         return count($this->players);
     }
 
-    public function  roll($roll) {
+    public function  roll() {
+        $roll = $this->dice->roll();
+
         if (!$this->isPlayable()){
             throw new \LogicException("Need at least 2 players");
         }
@@ -147,27 +154,27 @@ class Game {
     }
 
     private function  askQuestion() {
-        if ($this->currentCategory() == Category::POP)
-            $this->output->write(array_shift($this->popQuestions)->getLabel());
-        if ($this->currentCategory() == Category::SCIENCE)
-            $this->output->write(array_shift($this->scienceQuestions)->getLabel());
-        if ($this->currentCategory() == Category::SPORTS)
-            $this->output->write(array_shift($this->sportsQuestions)->getLabel());
-        if ($this->currentCategory() == Category::ROCK)
-            $this->output->write(array_shift($this->rockQuestions)->getLabel());
+        if ($this->currentCategory() == Categories::POP)
+            $this->output->write($this->popQuestions->next()->getLabel());
+        if ($this->currentCategory() == Categories::SCIENCE)
+            $this->output->write($this->scienceQuestions->next()->getLabel());
+        if ($this->currentCategory() == Categories::SPORTS)
+            $this->output->write($this->sportsQuestions->next()->getLabel());
+        if ($this->currentCategory() == Categories::ROCK)
+            $this->output->write($this->rockQuestions->next()->getLabel());
     }
 
 
     private function currentCategory() {
         switch ($this->getCurrentPlayerPlace() % 4) {
             case 0:
-                return Category::POP;
+                return Categories::POP;
             case 1:
-                return Category::SCIENCE;
+                return Categories::SCIENCE;
             case 2:
-                return Category::SPORTS;
+                return Categories::SPORTS;
             default:
-                return Category::ROCK;
+                return Categories::ROCK;
         }
     }
 

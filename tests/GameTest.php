@@ -5,6 +5,7 @@ namespace Tests;
 use Generator;
 use PHPUnit\Framework\TestCase;
 use Tests\Fixtures\ArrayOutput;
+use Tests\Fixtures\FixedDice;
 use Trivia\Game;
 use Trivia\Player;
 
@@ -34,7 +35,7 @@ class GameTest extends TestCase
     protected function setUp(): void
     {
         $this->arrayOutput = new ArrayOutput();
-        $this->game = new Game($this->arrayOutput);
+        $this->game = new Game($this->arrayOutput, new FixedDice(6));
     }
 
     public function test_can_add_player()
@@ -66,7 +67,12 @@ class GameTest extends TestCase
 
     public function test_game_is_not_ended_when_a_player_scores_less_than_6()
     {
-        $this->game->purses[3] = 4;
+        $playerMock = $this->getMockBuilder(Player::class)
+            ->disableOriginalConstructor()->onlyMethods(['getPurse'])->getMock();
+        $playerMock->expects($this->once())->method('getPurse')->willReturn(4);
+
+        $this->game->addPlayer($playerMock);
+
         $this->assertFalse($this->game->isEnded());
     }
 
@@ -81,7 +87,7 @@ class GameTest extends TestCase
     public function test_cannot_roll_when_there_is_no_players()
     {
         $this->expectException(\LogicException::class);
-        $this->game->roll(6);
+        $this->game->roll();
     }
 
     public function test_cannot_roll_when_there_only_one_player()
@@ -89,7 +95,7 @@ class GameTest extends TestCase
         $this->expectException(\LogicException::class);
 
         $this->game->addPlayer(new Player('bob'));
-        $this->game->roll(6);
+        $this->game->roll();
     }
 
 }

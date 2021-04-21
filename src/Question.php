@@ -24,10 +24,10 @@ class Question
      */
     public function __construct(string $label, string $category)
     {
-        if (!in_array($category, Category::all())) {
+        if (!in_array($category, Categories::all())) {
             throw new \InvalidArgumentException(sprintf(
                 "Trying to create a question with invalid category name '%s', only values in [%s] are allowed",
-                $category, implode(', ', Category::all())
+                $category, implode(', ', Categories::all())
             ));
         }
         $this->label = $label;

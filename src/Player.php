@@ -84,7 +84,7 @@ class Player
      * Places the player on his new position
      *
      * @param int $roll
-     * @param int $maxPlaces
+     * @param int $numberOfPlaces
      */
     public function changePlace(int $roll, int $numberOfPlaces)
     {
