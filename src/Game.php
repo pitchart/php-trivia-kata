@@ -26,6 +26,11 @@ class Game {
      */
     var $rockQuestions;
 
+    /**
+     * @var CategoryCollection
+     */
+    private $categoryCollection;
+
     var $currentPlayer = 0;
     var $isGettingOutOfPenaltyBox;
 
@@ -48,48 +53,14 @@ class Game {
      */
     public function  __construct(
         OutputInterface $output,
+        CategoryCollection $categoryCollection,
         ?DiceInterface $dice = null
     ){
         $this->output = $output;
         if (null == $dice) $dice = new Dice(6);
         $this->dice = $dice;
 
-        $this->popQuestions = new Category(Categories::POP);
-        $this->scienceQuestions = new Category(Categories::SCIENCE);
-        $this->rockQuestions = new Category(Categories::ROCK);
-        $this->sportsQuestions = new Category(Categories::SPORTS);
-
-        for ($i = 0; $i < 50; $i++) {
-            $this->popQuestions->addQuestion($this->createQuestion(Categories::POP, $i));
-            $this->scienceQuestions->addQuestion($this->createQuestion(Categories::SCIENCE, $i));
-            $this->sportsQuestions->addQuestion($this->createQuestion(Categories::SPORTS, $i));
-            $this->rockQuestions->addQuestion($this->createQuestion(Categories::ROCK, $i));
-        }
-    }
-
-    private function createQuestion(string $category, int $index): Question
-    {
-        $questionLabel = $this->createLabel($category);
-        return new Question($questionLabel. " ".$index, $category);
-    }
-
-    private function createLabel(string $category)
-    {
-        switch ($category) {
-            case Categories::SPORTS:
-                return "Sports Question";
-            case Categories::ROCK:
-                return "Rock Question";
-            case Categories::SCIENCE:
-                return "Science Question";
-            case Categories::POP:
-                return "Pop Question";
-        }
-        throw new \InvalidArgumentException(sprintf(
-            '$category must be in [%s], %s given',
-            implode(', ', Categories::all()),
-            $category
-        ));
+        $this->categoryCollection = $categoryCollection;
     }
 
     /**
@@ -154,14 +125,11 @@ class Game {
     }
 
     private function  askQuestion() {
-        if ($this->currentCategory() == Categories::POP)
-            $this->output->write($this->popQuestions->next()->getLabel());
-        if ($this->currentCategory() == Categories::SCIENCE)
-            $this->output->write($this->scienceQuestions->next()->getLabel());
-        if ($this->currentCategory() == Categories::SPORTS)
-            $this->output->write($this->sportsQuestions->next()->getLabel());
-        if ($this->currentCategory() == Categories::ROCK)
-            $this->output->write($this->rockQuestions->next()->getLabel());
+        $question = $this->categoryCollection->next($this->currentCategory());
+        if ($question)
+        {
+            $this->output->write($question->getLabel());
+        }
     }
 
 

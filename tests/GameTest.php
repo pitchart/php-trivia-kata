@@ -6,6 +6,7 @@ use Generator;
 use PHPUnit\Framework\TestCase;
 use Tests\Fixtures\ArrayOutput;
 use Tests\Fixtures\FixedDice;
+use Trivia\CategoryCollection;
 use Trivia\Game;
 use Trivia\Player;
 
@@ -35,7 +36,7 @@ class GameTest extends TestCase
     protected function setUp(): void
     {
         $this->arrayOutput = new ArrayOutput();
-        $this->game = new Game($this->arrayOutput, new FixedDice(6));
+        $this->game = new Game($this->arrayOutput, new CategoryCollection(), new FixedDice(6));
     }
 
     public function test_can_add_player()
@@ -76,13 +77,6 @@ class GameTest extends TestCase
         $this->assertFalse($this->game->isEnded());
     }
 
-    public function test_initializes_with_questions()
-    {
-        $this->assertCount(50, $this->game->popQuestions);
-        $this->assertCount(50, $this->game->sportsQuestions);
-        $this->assertCount(50, $this->game->scienceQuestions);
-        $this->assertCount(50, $this->game->rockQuestions);
-    }
 
     public function test_cannot_roll_when_there_is_no_players()
     {
