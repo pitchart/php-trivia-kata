@@ -10,23 +10,6 @@ class Game {
     private $players = array();
 
     /**
-     * @var Category
-     */
-    var $popQuestions;
-    /**
-     * @var Category
-     */
-    var $scienceQuestions;
-    /**
-     * @var Category
-     */
-    var $sportsQuestions;
-    /**
-     * @var Category
-     */
-    var $rockQuestions;
-
-    /**
      * @var CategoryCollection
      */
     private $categoryCollection;
@@ -116,6 +99,8 @@ class Game {
             } else {
                 $this->output->write($this->players[$this->currentPlayer] . " is not getting out of the penalty box");
                 $this->isGettingOutOfPenaltyBox = false;
+
+
             }
 
         } else {

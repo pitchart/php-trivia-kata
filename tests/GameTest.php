@@ -6,9 +6,12 @@ use Generator;
 use PHPUnit\Framework\TestCase;
 use Tests\Fixtures\ArrayOutput;
 use Tests\Fixtures\FixedDice;
+use Tests\Fixtures\PredictableDice;
+use Trivia\Categories;
 use Trivia\CategoryCollection;
 use Trivia\Game;
 use Trivia\Player;
+use Trivia\QuestionFactory;
 
 class GameTest extends TestCase
 {
@@ -92,4 +95,55 @@ class GameTest extends TestCase
         $this->game->roll();
     }
 
+    public function test_player_leaves_penalty_box_after_odd_number_roll()
+    {
+        $categoryCollection = new CategoryCollection();
+        $questionFactory = new QuestionFactory();
+
+        foreach (Categories::all() as $categoryLabel) {
+            $questions = $questionFactory->createList($categoryLabel, 10);
+            $categoryCollection->add(...$questions);
+        }
+
+        $predictableGame = new Game($this->arrayOutput, $categoryCollection, new PredictableDice([3,3,2,2,3,3,2,2]));
+        $predictableGame->addPlayer(new Player('toto'));
+        $predictableGame->addPlayer(new Player('titi'));
+
+        // toto
+        $predictableGame->roll();
+        $predictableGame->wrongAnswer();
+
+        // titi
+        $predictableGame->roll();
+        $predictableGame->correctAnswer();
+
+        // toto
+        $predictableGame->roll();
+        $lines = $this->arrayOutput->getLines();
+        $this->assertEquals("toto is not getting out of the penalty box", end($lines));
+        $predictableGame->correctAnswer();
+
+        // titi
+        $predictableGame->roll();
+        $predictableGame->correctAnswer();
+
+        // toto
+        $predictableGame->roll();
+        $lines = $this->arrayOutput->getLines();
+        $tail = array_slice($lines, -4);
+        $this->assertEquals("toto is getting out of the penalty box", $tail[0]);
+        $predictableGame->correctAnswer();
+
+        // titi
+        $predictableGame->roll();
+        $predictableGame->correctAnswer();
+
+        // toto
+        $predictableGame->roll();
+        $lines = $this->arrayOutput->getLines();
+        //print_r($lines);
+        $this->assertNotEquals("toto is not getting out of the penalty box", end($lines));
+        $predictableGame->correctAnswer();
+
+    }
 }
